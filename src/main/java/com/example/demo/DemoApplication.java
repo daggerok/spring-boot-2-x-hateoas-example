@@ -66,7 +66,6 @@ class User extends RepresentationModel<User> {
 class UsersResource {
 
   final UsersRepository usersRepository;
-  final HttpServletRequest httpServletRequest;
 
   // static final BiFunction<HttpServletRequest, User, RepresentationModel<User>> linked = (request, user) -> {
   //   var uri = URI.create(request.getRequestURL().toString());
@@ -81,22 +80,22 @@ class UsersResource {
   };
 
   @GetMapping("/collect")
-  Collection<RepresentationModel<User>> collect(@RequestParam("by") String by) {
+  Collection<RepresentationModel<User>> collect(@RequestParam("by") String by, HttpServletRequest serverHttpRequest) {
     return usersRepository.findAny(by).stream()
-                          .map(mapper.apply(httpServletRequest))
+                          .map(mapper.apply(serverHttpRequest))
                           .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
-  Optional<RepresentationModel<User>> getOne(@PathVariable UUID id) {
+  Optional<RepresentationModel<User>> getOne(@PathVariable UUID id, HttpServletRequest serverHttpRequest) {
     return usersRepository.findById(id)
-                          .map(mapper.apply(httpServletRequest));
+                          .map(mapper.apply(serverHttpRequest));
   }
 
   @GetMapping("/")
-  Collection<RepresentationModel<User>> getAll() {
+  Collection<RepresentationModel<User>> getAll(HttpServletRequest serverHttpRequest) {
     return usersRepository.findAll().stream()
-                          .map(mapper.apply(httpServletRequest))
+                          .map(mapper.apply(serverHttpRequest))
                           .collect(Collectors.toList());
   }
 }

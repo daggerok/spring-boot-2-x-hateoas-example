@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.*;
-import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
@@ -66,7 +66,6 @@ class User extends RepresentationModel<User> {
 class UsersResource {
 
   final UsersRepository usersRepository;
-  final HttpServletRequest httpServletRequest;
 
   // static final BiFunction<HttpServletRequest, User, RepresentationModel<User>> linked = (request, user) -> {
   //   var uri = URI.create(request.getRequestURL().toString());
@@ -75,28 +74,28 @@ class UsersResource {
   // static final Function<HttpServletRequest, Function<User, RepresentationModel<User>>> mapper =
   //     httpServletRequest -> user -> linked.apply(httpServletRequest, user);
 
-  static final Function<HttpServletRequest, Function<User, RepresentationModel<User>>> mapper = request -> user -> {
-    var uri = URI.create(request.getRequestURL().toString());
+  static final Function<ServerHttpRequest, Function<User, RepresentationModel<User>>> mapper = request -> user -> {
+    var uri = URI.create(request.getURI().toASCIIString());
     return user.add(new Link(String.format("%s://%s/%s", uri.getScheme(), uri.getAuthority(), user.getId())));
   };
 
   @GetMapping("/collect")
-  Collection<RepresentationModel<User>> collect(@RequestParam("by") String by) {
+  Collection<RepresentationModel<User>> collect(@RequestParam("by") String by, ServerHttpRequest serverHttpRequest) {
     return usersRepository.findAny(by).stream()
-                          .map(mapper.apply(httpServletRequest))
+                          .map(mapper.apply(serverHttpRequest))
                           .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
-  Optional<RepresentationModel<User>> getOne(@PathVariable UUID id) {
+  Optional<RepresentationModel<User>> getOne(@PathVariable UUID id, ServerHttpRequest serverHttpRequest) {
     return usersRepository.findById(id)
-                          .map(mapper.apply(httpServletRequest));
+                          .map(mapper.apply(serverHttpRequest));
   }
 
   @GetMapping("/")
-  Collection<RepresentationModel<User>> getAll() {
+  Collection<RepresentationModel<User>> getAll(ServerHttpRequest serverHttpRequest) {
     return usersRepository.findAll().stream()
-                          .map(mapper.apply(httpServletRequest))
+                          .map(mapper.apply(serverHttpRequest))
                           .collect(Collectors.toList());
   }
 }

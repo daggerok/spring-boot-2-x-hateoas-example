@@ -3,7 +3,7 @@
 ```bash
 ./mvnw ; java -jar target/*jar
 http :8080
-http :8080/collect?by=trololo@example.com
+http ":8080/collect?by=trololo@example.com"
 ```
 
 ## resources

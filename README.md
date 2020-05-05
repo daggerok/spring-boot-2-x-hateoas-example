@@ -14,3 +14,6 @@ http ":8080/collect?by=trololo@example.com"
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.2.6.RELEASE/reference/htmlsingle/#boot-features-jpa-and-spring-data)
 * [Building a Hypermedia-Driven RESTful Web Service](https://spring.io/guides/gs/rest-hateoas/)
 * [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
+
+## other repositories
+* [GitHub: daggerok/kotlin-ratpack-spring-boot-mongo-hateoas](https://github.com/daggerok/kotlin-ratpack-spring-boot-mongo-hateoas)

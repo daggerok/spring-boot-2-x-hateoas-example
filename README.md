@@ -17,3 +17,4 @@ http ":8080/collect?by=trololo@example.com"
 
 ## other repositories
 * [GitHub: daggerok/kotlin-ratpack-spring-boot-mongo-hateoas](https://github.com/daggerok/kotlin-ratpack-spring-boot-mongo-hateoas)
+* [GitHub: daggerok/HATEOAS-demo](https://github.com/daggerok/HATEOAS-demo)
